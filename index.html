@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvel Avengers - Cinematic Hub</title>
+    <style>
+        :root {
+            --bg-deep-black: #050506;
+            --bg-sidebar: #0b0b0d;
+            --marvel-red: #e6141c;
+            --text-white: #ffffff;
+            --text-gray: #7a7a85;
+            --card-shadow: rgba(230, 20, 28, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-deep-black);
+            color: var(--text-white);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- 1. SIDEBAR NAVIGATION --- */
+        .sidebar {
+            width: 90px;
+            background-color: var(--bg-sidebar);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            border-right: 1px solid #15151a;
+            position: fixed;
+            height: 100vh;
+            z-index: 10;
+        }
+
+        .marvel-logo {
+            background-color: var(--marvel-red);
+            color: white;
+            font-weight: 900;
+            padding: 8px 5px;
+            font-size: 0.9rem;
+            letter-spacing: -1px;
+            text-align: center;
+            text-transform: uppercase;
+            width: 70px;
+            margin-bottom: 40px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .nav-item {
+            color: var(--text-gray);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            transition: color 0.3s;
+            font-weight: 700;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--marvel-red);
+        }
+
+        /* --- 2. MAIN CONTENT --- */
+        .main-content {
+            margin-left: 90px;
+            width: calc(100% - 90px);
+            position: relative;
+        }
+
+        /* --- 3. HERO BANNER --- */
+        .hero-banner {
+            height: 60vh;
+            width: 100%;
+            position: relative;
+            background-image: linear-gradient(to right, rgba(5, 5, 6, 0.95) 35%, rgba(5, 5, 6, 0.5) 70%, rgba(5, 5, 6, 0.9) 100%), 
+                              url('avengers1.jpg'); /* เปลี่ยนเป็นภาพแบนเนอร์ที่คุณต้องการ */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding: 0 60px;
+        }
+
+        .hero-text-wrapper {
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .hero-desc {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* --- 4. FILTER BUTTONS --- */
+        .filter-wrapper {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid #2a2a35;
+            color: var(--text-white);
+            padding: 8px 18px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--marvel-red);
+            border-color: var(--marvel-red);
+            box-shadow: 0 0 15px var(--card-shadow);
+        }
+
+        /* --- 5. CARDS GRID --- */
+        .cards-section {
+            padding: 0 60px;
+            margin-top: -60px;
+            position: relative;
+            z-index: 5;
+            padding-bottom: 60px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .character-card {
+            background-color: #111116;
+            border: 1px solid #1c1c24;
+            border-bottom: 4px solid #1c1c24;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-img-holder {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .card-img-holder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .card-img-holder::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, #111116 5%, transparent 60%);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 12px; left: 12px;
+            background-color: var(--marvel-red);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .card-alias {
+            color: var(--marvel-red);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .card-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .ability-list {
+            list-style: none;
+        }
+
+        .ability-list li {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ability-list li::before {
+            content: '▪';
+            color: var(--marvel-red);
+            margin-right: 8px;
+        }
+
+        .character-card:hover {
+            transform: translateY(-10px);
+            border-bottom-color: var(--marvel-red);
+            box-shadow: 0 15px 30px rgba(230, 20, 28, 0.25);
+        }
+
+        .character-card:hover .card-img-holder img {
+            transform: scale(1.05);
+        }
+
+        /* --- 6. POPUP MODAL DESIGN --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background-color: #0f0f14;
+            border: 1px solid #22222a;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        .modal-overlay.open .modal-box {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 2rem;
+            color: var(--text-gray);
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--marvel-red);
+        }
+
+        .modal-header-img {
+            height: 250px;
+            width: 100%;
+            object-fit: cover;
+            border-bottom: 4px solid var(--marvel-red);
+        }
+
+        .modal-content-data {
+            padding: 30px;
+        }
+
+        .modal-hero-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .modal-hero-alias {
+            color: var(--marvel-red);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .modal-section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-gray);
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #22222a;
+            padding-bottom: 5px;
+            margin-top: 20px;
+        }
+
+        .modal-desc {
+            font-size: 0.9rem;
+            color: #b3b3bf;
+            line-height: 1.6;
+        }
+
+        .film-tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .film-tag {
+            background-color: #1a1a24;
+            border: 1px solid #2d2d3d;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            border-radius: 3px;
+            color: #d1d1d6;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="marvel-logo">Marvel</div>
+        <div class="nav-menu">
+            <div class="nav-item active">Avengers</div>
+            <div class="nav-item">Films</div>
+            <div class="nav-item">Comics</div>
+            <div class="nav-item">News</div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        
+        <section class="hero-banner">
+            <div class="hero-text-wrapper">
+                <h1 class="hero-title">Marvel Hero<br>Intelligence Center</h1>
+                <p class="hero-desc">คลิกที่การ์ดตัวละครเพื่อเปิดแฟ้มข้อมูลลับ ดูประวัติ รายชื่อภาพยนตร์ และวิเคราะห์หมวดหมู่พลังความสามารถอย่างละเอียดของเหล่าฮีโร่และแอนตี้ฮีโร่</p>
+                
+                <div class="filter-wrapper">
+                    <button class="filter-btn active" onclick="filterPower('All', this)">All Characters</button>
+                    <button class="filter-btn" onclick="filterPower('Tech', this)">Tech / Physical</button>
+                    <button class="filter-btn" onclick="filterPower('Cosmic', this)">Cosmic / God</button>
+                    <button class="filter-btn" onclick="filterPower('Magic', this)">Magic</button>
+                    <button class="filter-btn" onclick="filterPower('Mutant', this)">Mutant / Mutant-like</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="cards-section">
+            <div class="cards-grid" id="heroesContainer">
+                </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="characterModal" onclick="closeModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="toggleModal()">&times;</span>
+            <img src="" id="modalImg" class="modal-header-img" alt="Hero Banner">
+            <div class="modal-content-data">
+                <h2 id="modalName" class="modal-hero-title">Hero Name</h2>
+                <p id="modalAlias" class="modal-hero-alias">Alias</p>
+                
+                <h3 class="modal-section-title">Biography / Profile</h3>
+                <p id="modalDesc" class="modal-desc">Biography goes here...</p>
+                
+                <h3 class="modal-section-title">Featured Films (ภาพยนตร์เด่น)</h3>
+                <div id="modalFilms" class="film-tag-container">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const avengersDatabase = [
+            {
+                name: "Iron Man",
+                alias: "Tony Stark",
+                category: "Tech",
+                image: "ironman.jpg",
+                abilities: ["Nanotech Mark 85 Suit", "Repulsor Blast & Unibeam", "Advanced AI Integration"],
+                bio: "มหาเศรษฐีอัจฉริยะผู้สร้างชุดเกราะไฮเทคขึ้นมาเพื่อปกป้องโลก และเป็นหนึ่งในผู้ก่อตั้งทีม Avengers ยอมเสียสละชีวิตตัวเองในสงครามกับ Thanos",
+                films: ["Iron Man Trilogy", "The Avengers", "Captain America: Civil War", "Avengers: Endgame"]
+            },
+            {
+                name: "Thor Odinson",
+                alias: "God of Thunder",
+                category: "Cosmic",
+                image: "thor1.jpg",
+                abilities: ["Stormbreaker & Lightning", "Asgardian God Physiology", "Flight & Bifrost Control"],
+                bio: "บุตรแห่งโอดิน เทพเจ้าแห่งสายฟ้าผู้ปกป้องแอสการ์ดและจักรวาล มีอาวุธคู่ใจชิ้นใหม่คือขวานสตรอมเบรกเกอร์ที่ทรงพลังพอจะต้านพลังอินฟินิตี้สโตนได้",
+                films: ["Thor Quadrilogy", "The Avengers", "Avengers: Infinity War", "Avengers: Endgame"]
+            },
+            {
+                name: "Scarlet Witch",
+                alias: "Wanda Maximoff",
+                category: "Magic",
+                image: "scarlet1.jpg",
+                abilities: ["Chaos Magic Manipulation", "Reality & Mind Warping", "Psionic Telekinesis"],
+                bio: "ผู้ใช้เวทมนตร์กลียุค (Chaos Magic) ที่แข็งแกร่งที่สุดในจักรวาล สามารถบิดเบือนความจริงและควบคุมมิติจิตใจได้ตามต้องการ",
+                films: ["Avengers: Age of Ultron", "Captain America: Civil War", "WandaVision", "Doctor Strange in the Multiverse of Madness"]
+            },
+            {
+                name: "Captain America",
+                alias: "Steve Rogers",
+                category: "Tech",
+                image: "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=500",
+                abilities: ["Super Soldier Serum", "Vibranium Shield Mastery", "Master Tactician"],
+                bio: "บุรุษผู้ได้รับเซรุ่มซูเปอร์โซลเจอร์ในช่วงสงครามโลกครั้งที่ 2 ผู้นำที่เปี่ยมด้วยคุณธรรมของทีม Avengers ผู้ออกคำสั่งคลาสสิก 'Avengers... Assemble'",
+                films: ["Captain America Trilogy", "The Avengers", "Avengers: Infinity War", "Avengers: Endgame"]
+            },
+            {
+                name: "Spider-Man",
+                alias: "Peter Parker",
+                category: "Tech",
+                image: "https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?q=80&w=500",
+                abilities: ["Spider-Sense (สัมผัสแมงมุม)", "Wall-Crawling & Super Agility", "Web-Shooters & Stark Tech Suits"],
+                bio: "เด็กหนุ่มจากควีนส์ที่ได้รับพลังจากแมงมุมกัมมันตภาพรังสี ได้รับการดูแลและมอบชุดเกราะสุดล้ำจาก Tony Stark จนกลายมาเป็นหนึ่งในสมาชิกคนสำคัญ",
+                films: ["Spider-Man: Homecoming / Far From Home / No Way Home", "Captain America: Civil War", "Avengers: Infinity War"]
+            },
+            {
+                name: "Doctor Strange",
+                alias: "Stephen Strange",
+                category: "Magic",
+                image: "doctor1.jpg",
+                abilities: ["Eldritch Magic Mastery", "Mastery of Mystic Arts", "Dimension & Portal Travel"],
+                bio: "อดีตศัลยแพทย์ประสาทผู้หยิ่งยโสที่ผันตัวมาศึกษาศาสตร์ลี้ลับจนได้ดำรงตำแหน่งจอมเวทย์สูงสุด (Sorcerer Supreme) คอยปกป้องมิติโลกจากภัยคุกคามลึกลับ",
+                films: ["Doctor Strange Duology", "Avengers: Infinity War", "Spider-Man: No Way Home"]
+            },
+            {
+                name: "Deadpool",
+                alias: "Wade Wilson",
+                category: "Mutant",
+                image: "deadpool.jpg",
+                abilities: ["Accelerated Healing Factor", "Immunity to All Diseases", "Master Martial Artist"],
+                bio: "ฮีโร่สายเกรียนผู้มีพลังรักษาร่างกายขั้นสุดยอด ชนิดที่หัวขาดก็งอกใหม่ได้ และมีความสามารถพิเศษในการทำลายกำแพงที่สี่ (Fourth Wall) เพื่อหันมาคุยกับคนดูได้",
+                films: ["Deadpool 1 & 2", "Deadpool & Wolverine"]
+            }
+        ];
+
+        function renderCards(dataList) {
+            const container = document.getElementById('heroesContainer');
+            container.innerHTML = '';
+
+            dataList.forEach((hero) => {
+                const trueIndex = avengersDatabase.findIndex(h => h.name === hero.name);
+                
+                const cardHTML = `
+                    <div class="character-card" onclick="openHeroDetails(${trueIndex})">
+                        <div class="card-img-holder">
+                            <span class="card-tag">${hero.category}</span>
+                            <img src="${hero.image}" alt="${hero.name}">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-alias">${hero.alias}</p>
+                            <h2 class="card-name">${hero.name}</h2>
+                            <ul class="ability-list">
+                                ${hero.abilities.map(ab => `<li>${ab}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function filterPower(category, btnComponent) {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnComponent.classList.add('active');
+
+            if (category === 'All') {
+                renderCards(avengersDatabase);
+            } else {
+                const filteredData = avengersDatabase.filter(item => item.category === category);
+                renderCards(filteredData);
+            }
+        }
+
+        function openHeroDetails(index) {
+            const hero = avengersDatabase[index];
+            
+            document.getElementById('modalImg').src = hero.image;
+            document.getElementById('modalName').innerText = hero.name;
+            document.getElementById('modalAlias').innerText = hero.alias;
+            document.getElementById('modalDesc').innerText = hero.bio;
+            
+            const filmsContainer = document.getElementById('modalFilms');
+            filmsContainer.innerHTML = hero.films.map(film => `<span class="film-tag">${film}</span>`).join('');
+            
+            toggleModal();
+        }
+
+        function toggleModal() {
+            const modal = document.getElementById('characterModal');
+            modal.classList.toggle('open');
+        }
+
+        function closeModal(event) {
+            if(event.target.classList.contains('modal-overlay')) {
+                toggleModal();
+            }
+        }
+
+        renderCards(avengersDatabase);
+        
+    </script>
+</body>
+</html>
